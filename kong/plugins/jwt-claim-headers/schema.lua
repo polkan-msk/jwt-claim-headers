@@ -34,6 +34,14 @@ return {
                             default = false,
                         }
                     }, {
+                        pass_fields = {
+                            type = "array",
+                            elements = {
+                                type = "string"
+                            },
+                            default = {"uid"}
+                        }
+                    }, {
                         uri_param_names = {
                             type = "set",
                             elements = {
@@ -48,6 +56,11 @@ return {
                                 type = "string"
                             },
                             default = {"BEARER"}
+                        }
+                    }, {
+                        header_prefix = {
+                            type = "string",
+                            default = "x-consumer-token"
                         }
                     }
                 }
