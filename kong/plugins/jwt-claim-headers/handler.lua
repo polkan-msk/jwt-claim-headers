@@ -1,6 +1,8 @@
 local jwt_decoder = require "kong.plugins.jwt.jwt_parser"
+local luna = require 'lunajson'
 local JWT_PLUGIN_PRIORITY = (require "kong.plugins.jwt.handler").PRIORITY
 local CLAIM_HEADERS = require "kong.plugins.jwt-claim-headers.claim_headers"
+local HEADER_PREFIX = "x-consumer-token-"
 
 local kong = kong
 local ngx_re_gmatch = ngx.re.gmatch
@@ -13,26 +15,51 @@ local JwtClaimHeadersHandler = {
 local function retrieve_token(conf)
   local uri_parameters = kong.request.get_query()
 
-  for _, v in ipairs(conf.uri_param_names) do
-    if uri_parameters[v] then
-      return uri_parameters[v]
+  if (conf.check_uri) then
+    for _, v in ipairs(conf.uri_param_names) do
+      if uri_parameters[v] then
+        return uri_parameters[v]
+      end
     end
   end
 
-  local authorization_header = kong.request.get_headers()["authorization"]
-  if authorization_header then
-    local iterator, iter_err = ngx_re_gmatch(authorization_header, "\\s*[Bb]earer\\s+(.+)")
-    if not iterator then
-      return nil, iter_err
-    end
+  if (conf.check_header) then
+    local authorization_header = kong.request.get_headers()["authorization"]
+    if authorization_header then
+      local iterator, iter_err = ngx_re_gmatch(authorization_header, "\\s*[Bb]earer\\s+(.+)")
+      if not iterator then
+        return nil, iter_err
+      end
 
-    local m, err = iterator()
-    if err then
-      return nil, err
-    end
+      local m, err = iterator()
+      if err then
+        return nil, err
+      end
 
-    if m and #m > 0 then
-      return m[1]
+      if m and #m > 0 then
+        return m[1]
+      end
+    end
+  end
+
+  if (conf.check_cookie) then
+    for _, v in ipairs(conf.cookie_names) do
+      local cookie_header = kong.request.get_headers()["cookie"]
+      if cookie_header then
+        local iterator, iter_err = ngx_re_gmatch(cookie_header, ".*?" .. v .. "=([^;\\s]+)")
+        if not iterator then
+          return nil, iter_err
+        end
+
+        local m, err = iterator()
+        if err then
+          return nil, err
+        end
+
+        if m and #m > 0 then
+          return m[1]
+        end
+      end
     end
   end
 end
@@ -62,6 +89,10 @@ function JwtClaimHeadersHandler:access(conf)
   end
 
   local claims = jwt.claims
+
+  if (conf.pass_whole_payload) then
+    kong.service.request.set_header(HEADER_PREFIX .. 'payload', luna.encode( claims ))
+  end
 
   for claim_key, claim_value in pairs(claims) do
     local request_header = CLAIM_HEADERS[claim_key]

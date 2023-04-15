@@ -14,6 +14,26 @@ return {
                 type = "record",
                 fields = {
                     {
+                        check_uri = {
+                            type = "boolean",
+                            default = true,
+                        }
+                    }, {
+                        check_header = {
+                            type = "boolean",
+                            default = true,
+                        }
+                    }, {
+                        check_cookie = {
+                            type = "boolean",
+                            default = true,
+                        }
+                    }, {
+                        pass_whole_payload = {
+                            type = "boolean",
+                            default = false,
+                        }
+                    }, {
                         uri_param_names = {
                             type = "set",
                             elements = {
@@ -28,21 +48,6 @@ return {
                                 type = "string"
                             },
                             default = {"BEARER"}
-                        }
-                    }, {
-                        check_uri = {
-                            type = "boolean",
-                            default = true,
-                        }
-                    }, {
-                        check_header = {
-                            type = "boolean",
-                            default = true,
-                        }
-                    }, {
-                        check_cookie = {
-                            type = "boolean",
-                            default = true,
                         }
                     }
                 }
