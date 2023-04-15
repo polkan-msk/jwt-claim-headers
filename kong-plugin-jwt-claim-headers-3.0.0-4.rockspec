@@ -1,7 +1,7 @@
 local plugin_name = "jwt-claim-headers"
 local package_name = "kong-plugin-" .. plugin_name
 local package_version = "3.0.0"
-local rockspec_revision = "1"
+local rockspec_revision = "4"
 
 local github_account_name = "polkan-msk"
 local github_repo_name = "jwt-claim-headers"
@@ -22,8 +22,8 @@ description = {
   homepage = "https://github.com/polkan-msk/jwt-claim-headers"
 }
 dependencies = {
-  "lua ~> 5.1",
-  "kong >= 3.0.0"
+  --"lua ~> 5.1",
+  --"kong >= 3.0.0"
 }
 build = {
   type = "builtin",
