@@ -6,7 +6,7 @@ local kong = kong
 local ngx_re_gmatch = ngx.re.gmatch
 
 local JwtClaimHeadersHandler = {
-  VERSION = "2.0.0",
+  VERSION = "3.0.0",
   PRIORITY = JWT_PLUGIN_PRIORITY - 100,
 }
 
