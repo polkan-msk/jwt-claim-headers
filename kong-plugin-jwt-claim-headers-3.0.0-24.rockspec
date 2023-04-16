@@ -1,7 +1,7 @@
 local plugin_name = "jwt-claim-headers"
 local package_name = "kong-plugin-" .. plugin_name
 local package_version = "3.0.0"
-local rockspec_revision = "23"
+local rockspec_revision = "24"
 
 local github_account_name = "polkan-msk"
 local github_repo_name = "jwt-claim-headers"
@@ -28,6 +28,6 @@ build = {
   type = "builtin",
   modules = {
     ["kong.plugins."..plugin_name..".handler"] = "kong/plugins/"..plugin_name.."/handler.lua",
-    ["kong.plugins."..plugin_name..".schema"] = "kong/plugins/"..plugin_name.."/schema.lua",      
+    ["kong.plugins."..plugin_name..".schema"] = "kong/plugins/"..plugin_name.."/schema.lua",
   }
 }
